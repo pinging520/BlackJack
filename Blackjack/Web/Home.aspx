@@ -14,7 +14,6 @@
         <tr style="">
             <td>
                 <asp:Image ID='Img' runat='server' ImageUrl='<%#string.Format("~/Images/{0}_{1}.png",Eval("Color"),Eval("point")) %>' width="100"  height="150" />
-                <asp:Label ID="ima" runat="server" Text='<%# Eval("point")%>' />
             </td>
             </tr>
     </ItemTemplate>
@@ -34,7 +33,6 @@
         <tr style="">
             <td>
                 <asp:Image ID='Image1' runat='server' ImageUrl='<%#string.Format("~/Images/{0}_{1}.png",Eval("Color"),Eval("point")) %>' width="100"  height="150" />
-                <asp:Label ID="image" runat="server" Text='<%# Eval("point")%>' />
             </td>
             </tr>
     </ItemTemplate>

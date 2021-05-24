@@ -16,9 +16,11 @@ namespace Blackjack.Web
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack) { 
-            Up.Visible = false;
-            Close.Visible = false;
+            if (!IsPostBack) {
+                HttpContext.Current.Session.RemoveAll();
+                
+                Up.Visible = false;
+                Close.Visible = false;
                 Response.Cache.SetNoStore();
             }
 
@@ -31,6 +33,7 @@ namespace Blackjack.Web
             int Round = 1;
             if (HttpContext.Current.Application["Round"] == null)
             {
+                
                 Hand.HandCards.Clear();
                 Hand.Card = Start.GetCard(1);
                 Button1.Text = "Round Next";
@@ -55,7 +58,7 @@ namespace Blackjack.Web
             int User = 2;//共2人
             int get = (User - 1) * 2 + 1;//初3張
 
-            int i = Convert.ToInt32(Session["count"]); //*********
+            int i = Hand.HandCards.Count;
             int z = 0,y;
             while (z < get) 
             {
@@ -105,7 +108,7 @@ namespace Blackjack.Web
                 
             }
 
-            Session["Count"] = i;
+            
 
         }
 
@@ -113,7 +116,7 @@ namespace Blackjack.Web
         {
             int Round = Int32.Parse(HttpContext.Current.Application["Round"].ToString());
             //HttpContext.Current.Session[1] = null;
-            int i = Convert.ToInt32(Session["Count"]);
+            int i = Hand.HandCards.Count;
             var id = 1;
             //抽牌
             var y = Hand.Card[i];
@@ -121,8 +124,8 @@ namespace Blackjack.Web
             while (y > 13) { y -= 13; color++; }
             
             Hand.HandCards.Add(new Hand() { id = id, Color = color, point = y ,Round = Round});
-            i++; //抽牌數+1
-            Session["count"] = i;//存抽牌數
+            
+            
 
             
             int total = Total(id);//總分數數 算ACE
@@ -151,8 +154,8 @@ namespace Blackjack.Web
             ListView1.DataSource = item;
             ListView1.DataBind();
 
-
-            Session["User"] = total;
+            
+           
         }
 
         protected void Close_Click(object sender, EventArgs e)
@@ -163,9 +166,9 @@ namespace Blackjack.Web
             var User = Total(1);
             HttpContext.Current.Session[1] = null;
 
-
-            int i = Convert.ToInt32(Session["Count"]);
-            int c = i;
+            
+            int i = Hand.HandCards.Count;
+            
             while (Master < User)
             {
                 var y = Hand.Card[i];
@@ -202,7 +205,7 @@ namespace Blackjack.Web
             ListView.DataBind();
 
 
-            Session["count"] = i;//存抽牌數
+            
             
         }
 
