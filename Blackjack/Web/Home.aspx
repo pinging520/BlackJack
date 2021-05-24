@@ -2,11 +2,12 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <script language=javascript>
 
-             
-
+ 
     </script>
-    <asp:Label ID="Deck" runat="server" Text=""></asp:Label>
-    <p>回合：<asp:Label ID="Rd" runat="server" Text=""></asp:Label><p>
+    <asp:UpdatePanel ID="UpdatePanel1" runat="server"><ContentTemplate>
+
+    <p>總抽數：<asp:Label ID="Deck" runat="server" Text=""></asp:Label></p>
+    <p>回合：<asp:Label ID="Rd" runat="server" Text=""></asp:Label></p>
     <asp:Button ID="Button1" runat="server" Text="start" OnClick="Button1_Click" /><br />
     <asp:Label ID="M1" runat="server" Text=""></asp:Label>
     <asp:ListView ID="ListView" runat="server" >
@@ -36,7 +37,7 @@
      
     <asp:Button ID="Hit" runat="server" Text="Hit" OnClick="Hit_Click" />
     <asp:Button ID="Close" runat="server" Text="Stand" OnClick="Close_Click" /><br />
-
-
+</ContentTemplate>
+  </asp:UpdatePanel>     
 
 </asp:Content>
