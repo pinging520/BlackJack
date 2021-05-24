@@ -19,6 +19,7 @@ namespace Blackjack.Web
             if (!IsPostBack) { 
             Up.Visible = false;
             Close.Visible = false;
+                Response.Cache.SetNoStore();
             }
 
         }
@@ -35,7 +36,7 @@ namespace Blackjack.Web
                 Button1.Text = "Round Next";
                 HttpContext.Current.Application["Round"] = 1; //場數
                 Round = Int32.Parse(HttpContext.Current.Application["Round"].ToString());
-                Session["count"] = 0;
+                Session["Count"] = 0;
             }
             else
             {
@@ -67,15 +68,20 @@ namespace Blackjack.Web
                 i++;
                 z++;
             }
-            Session["count"] = i;
-
+            
+            
             //
-            int total1 = Hand.SelectCards(1);
-            int total = Hand.SelectCards(0);
+            int total1 = Total(1);
+            
+            //Session["User"+"1"] = total1; //User - total
+            int total = Total(0);
+            
+            //Session["Master"] = total; //Master - total
             M1.Text = total.ToString();
             U1.Text = total1.ToString();
-            Session["Master"] = total; //Master - total
-            Session["User"] = total1; //User - total
+
+            HttpContext.Current.Session["1"] = null;
+            HttpContext.Current.Session[0] = null;
             //
             List<Hand> item = Hand.HandCards.FindAll(x => x.id == 0 && x.Round == Round) ;
             ListView.DataSource = item;
@@ -86,8 +92,9 @@ namespace Blackjack.Web
             ListView1.DataBind();
 
            
-            HttpContext.Current.Session[1] = null;
-            HttpContext.Current.Session[0] = null;
+           
+            
+            
 
             if (total1 == 21)
             {
@@ -98,15 +105,15 @@ namespace Blackjack.Web
                 
             }
 
-
+            Session["Count"] = i;
 
         }
 
         protected void Up_Click(object sender, EventArgs e)
         {
             int Round = Int32.Parse(HttpContext.Current.Application["Round"].ToString());
-
-            int i = Convert.ToInt32(Session["count"]);
+            //HttpContext.Current.Session[1] = null;
+            int i = Convert.ToInt32(Session["Count"]);
             var id = 1;
             //抽牌
             var y = Hand.Card[i];
@@ -118,10 +125,7 @@ namespace Blackjack.Web
             Session["count"] = i;//存抽牌數
 
             
-            int total = Hand.SelectCards(1);//總分數數 算ACE
-            //--------------判斷
-            if (total > 21 && Start.getset(id))
-            { total -= 10; }
+            int total = Total(id);//總分數數 算ACE
             HttpContext.Current.Session[id] = null;
 
             if (total > 21) 
@@ -154,12 +158,14 @@ namespace Blackjack.Web
         protected void Close_Click(object sender, EventArgs e)
         {
             int Round = Int32.Parse(HttpContext.Current.Application["Round"].ToString());
+            var Master = Total(0);
+            HttpContext.Current.Session[0] = null;
+            var User = Total(1);
+            HttpContext.Current.Session[1] = null;
 
-            var User = Convert.ToInt32(Session["User"]);
-            var Master = Convert.ToInt32(Session["Master"]);
 
-            int i = Convert.ToInt32(Session["count"]);
-
+            int i = Convert.ToInt32(Session["Count"]);
+            int c = i;
             while (Master < User)
             {
                 var y = Hand.Card[i];
@@ -168,9 +174,7 @@ namespace Blackjack.Web
                 Hand.HandCards.Add(new Hand() { id = 0, Color = color, point = y, Round= Round });
                 i++; //抽牌數+1
 
-                int total = Hand.SelectCards(0);//總分數數 算ACE
-                if (total > 21 && Start.getset(0))
-                { total -= 10; }
+                int total = Total(0);
                 HttpContext.Current.Session[0] = null;
                 Master = total;
             }
@@ -202,27 +206,14 @@ namespace Blackjack.Web
             
         }
 
-        public static bool FirstStart()
+        public static int Total(int id)
         {
-            if (HttpContext.Current.Application["Round"] == null)
-            {
-                Hand.HandCards.Clear();
-                Hand.Card = Start.GetCard(1);
-                HttpContext.Current.Application["Round"] = 1; //場數
-                return true;
-            }
-            else
-            {
-                int Round;
-                Int32.TryParse(HttpContext.Current.Application["Round"].ToString(), out Round);
-                Round++;
-                HttpContext.Current.Application["Round"] = Round;
-                return false;
+            var Total = Hand.SelectCards(id);
+            if (Total > 21 && Start.getset(id))
+            { Total -= 10; }
 
-            }
+            return Total;
 
-            
-        
         }
 
 
