@@ -34,7 +34,7 @@
             </tr>
     </ItemTemplate></asp:ListView><br />
      
-    <asp:Button ID="Up" runat="server" Text="Hit" OnClick="Up_Click" />
+    <asp:Button ID="Hit" runat="server" Text="Hit" OnClick="Hit_Click" />
     <asp:Button ID="Close" runat="server" Text="Stand" OnClick="Close_Click" /><br />
 
 

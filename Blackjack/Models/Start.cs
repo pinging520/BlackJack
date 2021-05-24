@@ -43,18 +43,16 @@ namespace Blackjack.Models
      
         }
 
-        public static bool getset(int id)
+        public static bool getset(string id)
         {
             if (HttpContext.Current.Session[id] != "Ace")
             {
                
                 return false;
             }
-            else
-            {
                
                 return true;
-            }
+            
 
 
         }

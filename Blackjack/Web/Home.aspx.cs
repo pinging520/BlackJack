@@ -18,8 +18,8 @@ namespace Blackjack.Web
         {
             if (!IsPostBack) {
                 HttpContext.Current.Session.RemoveAll();
-                
-                Up.Visible = false;
+
+                Hit.Visible = false;
                 Close.Visible = false;
                 Response.Cache.SetNoStore();
             }
@@ -31,6 +31,7 @@ namespace Blackjack.Web
         protected void Button1_Click(object sender, EventArgs e)
         {
             int Round = 1;
+            //FirstStart();
             if (HttpContext.Current.Application["Round"] == null)
             {
                 
@@ -48,12 +49,12 @@ namespace Blackjack.Web
                 HttpContext.Current.Application["Round"] = Round;
             }
 
-            //FirstStart();
+            
             Decks();
             Rd.Text = Round.ToString();
             Game.Text = "";
 
-            Up.Visible = true;
+            Hit.Visible = true;
             Close.Visible = true;
             Button1.Visible =false ;
             
@@ -68,32 +69,29 @@ namespace Blackjack.Web
                 var color = 1;
                 while (y>13) { y -= 13;color++; }
                 if (color > 4) { color = color%4==0?1: color % 4; }
-                var x = (3+z)%2;
+                string x = ((3+z)%2).ToString();
                 Hand.HandCards.Add(new Hand() {id =x ,Color=color ,point= y ,Round= Round});
                 i++;
                 z++;
             }
             
             
-            //
-            int total1 = Total(1);
+  
+            int total1 = Total("1");
             
-            //Session["User"+"1"] = total1; //User - total
-            int total = Total(0);
+            int total = Total("0");
             
-            //Session["Master"] = total; //Master - total
+
             M1.Text = total.ToString();
             U1.Text = total1.ToString();
             Deck.Text = Hand.HandCards.Count.ToString();
 
-            HttpContext.Current.Session["1"] = null;
-            HttpContext.Current.Session[0] = null;
-            //
-            List<Hand> item = Hand.HandCards.FindAll(x => x.id == 0 && x.Round == Round) ;
+
+            List<Hand> item = Hand.HandCards.FindAll(x => x.id == "0" && x.Round == Round) ;
             ListView.DataSource = item;
             ListView.DataBind();
 
-            List<Hand> item1 = Hand.HandCards.FindAll(x => x.id == 1 && x.Round == Round);
+            List<Hand> item1 = Hand.HandCards.FindAll(x => x.id == "1" && x.Round == Round);
             ListView1.DataSource = item1;
             ListView1.DataBind();
 
@@ -105,7 +103,7 @@ namespace Blackjack.Web
             if (total1 == 21)
             {
                 Game.Text ="恭喜獲勝";
-                Up.Visible = false;
+                Hit.Visible = false;
                 Close.Visible = false;
                 Button1.Visible = true;
                 
@@ -115,12 +113,12 @@ namespace Blackjack.Web
 
         }
 
-        protected void Up_Click(object sender, EventArgs e)
+        protected void Hit_Click(object sender, EventArgs e)
         {
             int Round = Int32.Parse(HttpContext.Current.Application["Round"].ToString());
-            //HttpContext.Current.Session[1] = null;
+            
             int i = Hand.HandCards.Count;
-            var id = 1;
+            string id = "1";
             //抽牌
             Decks();
             var y = Hand.Card[i];
@@ -134,13 +132,13 @@ namespace Blackjack.Web
 
             
             int total = Total(id);//總分數數 算ACE
-            HttpContext.Current.Session[id] = null;
+            
             U1.Text = total.ToString();
 
             if (total > 21) 
             {   
                 Game.Text = "你輸了";
-                Up.Visible= false;
+                Hit.Visible= false;
                 Close.Visible = false;
                 Button1.Visible = true;
                 
@@ -148,7 +146,7 @@ namespace Blackjack.Web
             else if (total == 21) 
             { 
                 Game.Text ="恭喜獲勝";
-                Up.Visible = false;
+                Hit.Visible = false;
                 Close.Visible = false;
                 Button1.Visible = true;
                 
@@ -156,7 +154,7 @@ namespace Blackjack.Web
             
 
       
-            List<Hand> item = Hand.HandCards.FindAll(x => x.id == 1 && x.Round == Round);
+            List<Hand> item = Hand.HandCards.FindAll(x => x.id == "1" && x.Round == Round);
             ListView1.DataSource = item;
             ListView1.DataBind();
             Deck.Text = Hand.HandCards.Count.ToString();
@@ -168,26 +166,26 @@ namespace Blackjack.Web
         protected void Close_Click(object sender, EventArgs e)
         {
             int Round = Int32.Parse(HttpContext.Current.Application["Round"].ToString());
-            var Master = Total(0);
-            HttpContext.Current.Session[0] = null;
-            var User = Total(1);
-            HttpContext.Current.Session[1] = null;
+            var Master = Total("0");
+            
+            var User = Total("1");
+           
 
             
             int i = Hand.HandCards.Count;
             
             while (Master < User)
             {
-                Decks();//  如果while
+                Decks();
                 var y = Hand.Card[i];
                 var color = 1;
                 while (y > 13) { y -= 13; color++; }
                 if (color > 4) { color = color % 4 == 0 ? 1 : color % 4; }
-                Hand.HandCards.Add(new Hand() { id = 0, Color = color, point = y, Round= Round });
+                Hand.HandCards.Add(new Hand() { id = "0", Color = color, point = y, Round= Round });
                 i++; //抽牌數+1
 
-                int total = Total(0);
-                HttpContext.Current.Session[0] = null;
+                int total = Total("0");
+                HttpContext.Current.Session["0"] = null;
                 Master = total;
             }
 
@@ -195,7 +193,7 @@ namespace Blackjack.Web
 
             if (Master > User && Master <= 21)
             { Game.Text = "你輸了";
-                Up.Visible = false;
+                Hit.Visible = false;
                 Close.Visible = false;
                 Button1.Visible = true;
             }
@@ -203,17 +201,17 @@ namespace Blackjack.Web
             if (Master > 21 || Master < User) 
             { 
                 Game.Text = "你贏了";
-                Up.Visible = false;
+                Hit.Visible = false;
                 Close.Visible = false;
                 Button1.Visible = true;
             }
             if (Master == User) { Game.Text = "平手";
-                Up.Visible = false;
+                Hit.Visible = false;
                 Close.Visible = false;
                 Button1.Visible = true;
             }
 
-            List<Hand> item = Hand.HandCards.FindAll(x => x.id == 0 && x.Round == Round);
+            List<Hand> item = Hand.HandCards.FindAll(x => x.id == "0" && x.Round == Round);
             ListView.DataSource = item;
             ListView.DataBind();
             Deck.Text = Hand.HandCards.Count.ToString();
@@ -223,16 +221,18 @@ namespace Blackjack.Web
 
         }
 
-        public static int Total(int id)
+        //手牌總數-ace
+        public static int Total(string id)
         {
             var Total = Hand.SelectCards(id);
             if (Total > 21 && Start.getset(id))
             { Total -= 10; }
-
+            HttpContext.Current.Session[id] = null;
             return Total;
 
         }
 
+        //算牌庫是否用完
         public bool Decks()
         {
             int i = 1;
@@ -247,12 +247,10 @@ namespace Blackjack.Web
                 Hand.Card = buff;
                 return true;
             }
-
-
             return false;
         }
 
-
+      
 
     }
 }

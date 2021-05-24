@@ -9,7 +9,7 @@ namespace Blackjack.Models
 {
     public class Hand
     {
-        public int id { get; set; }
+        public string id { get; set; }
         public int Color { get; set; }
         public int point { get; set; }
         public int Round { get; set; }
@@ -18,7 +18,7 @@ namespace Blackjack.Models
         public static List<Hand> HandCards= new List<Hand>();
 
 
-        public static int SelectCards(int id)
+        public static int SelectCards(string id)
         {
             int Round = Int32.Parse(HttpContext.Current.Application["Round"].ToString());
 
