@@ -102,7 +102,7 @@ namespace Blackjack.Web
 
             if (total1 == 21)
             {
-                Game.Text ="恭喜獲勝";
+                Game.Text ="Win!!";
                 Hit.Visible = false;
                 Close.Visible = false;
                 Button1.Visible = true;
@@ -137,7 +137,7 @@ namespace Blackjack.Web
 
             if (total > 21) 
             {   
-                Game.Text = "你輸了";
+                Game.Text = "Lose!!";
                 Hit.Visible= false;
                 Close.Visible = false;
                 Button1.Visible = true;
@@ -145,7 +145,7 @@ namespace Blackjack.Web
             }
             else if (total == 21) 
             { 
-                Game.Text ="恭喜獲勝";
+                Game.Text = "Win!!";
                 Hit.Visible = false;
                 Close.Visible = false;
                 Button1.Visible = true;
@@ -192,7 +192,7 @@ namespace Blackjack.Web
             M1.Text = Master.ToString();
 
             if (Master > User && Master <= 21)
-            { Game.Text = "你輸了";
+            { Game.Text = "Lose!!";
                 Hit.Visible = false;
                 Close.Visible = false;
                 Button1.Visible = true;
@@ -200,12 +200,12 @@ namespace Blackjack.Web
 
             if (Master > 21 || Master < User) 
             { 
-                Game.Text = "你贏了";
+                Game.Text = "Win!!";
                 Hit.Visible = false;
                 Close.Visible = false;
                 Button1.Visible = true;
             }
-            if (Master == User) { Game.Text = "平手";
+            if (Master == User) { Game.Text = "Tie";
                 Hit.Visible = false;
                 Close.Visible = false;
                 Button1.Visible = true;
